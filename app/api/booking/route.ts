@@ -6,10 +6,14 @@ export async function POST(request: NextRequest) {
         const { action } = body;
 
         if (action === 'book') {
-            // Import the booking bot (Note: This would typically be a server-side only import)
-            // For demo purposes, we'll simulate the booking process
+            console.log('Starting simulated booking process...');
             
-            // Simulate booking process
+            // Simulate booking delay
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // Check if email credentials are configured
+            const hasEmailConfig = process.env.EMAIL_USER && process.env.EMAIL_PASS;
+            
             const mockBooking = {
                 success: true,
                 booking: {
@@ -18,20 +22,22 @@ export async function POST(request: NextRequest) {
                     players: 4,
                     holes: 9,
                     cartType: 'Any'
-                }
+                },
+                emailSent: hasEmailConfig,
+                notes: [
+                    'This is a simulated booking for development',
+                    hasEmailConfig 
+                        ? 'Email notification would be sent in production' 
+                        : 'Configure email credentials to enable notifications',
+                    'Deploy to Railway/Render for actual Selenium automation'
+                ]
             };
 
-            // In production, you would call:
-            // const CobbleHillsBookingBot = require('../../../lib/booking-bot');
-            // const bot = new CobbleHillsBookingBot();
-            // const result = await bot.performBooking();
-            // bot.closeDatabase();
-
+            console.log('Simulated booking completed:', mockBooking);
             return NextResponse.json(mockBooking);
         }
 
         if (action === 'status') {
-            // Check booking status
             const status = {
                 nextWednesday: getNextWednesday(),
                 lastBooking: null,
